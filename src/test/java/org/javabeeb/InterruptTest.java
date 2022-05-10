@@ -26,18 +26,8 @@ class InterruptTest {
 
         final InterruptSource interruptSource = new InterruptSource() {
             @Override
-            public String getName() {
-                return "test";
-            }
-
-            @Override
             public boolean isIRQ() {
                 return (memory.readByte(interruptRegister) & 1) != 0;
-            }
-
-            @Override
-            public boolean isNMI() {
-                return false;
             }
         };
 

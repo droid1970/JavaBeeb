@@ -128,11 +128,6 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
         return false;
     }
 
-    @Override
-    public boolean isNMI() {
-        return false;
-    }
-
     private boolean isReadOnly(final int index) {
         return (index >= 16 && index <= 17);
     }

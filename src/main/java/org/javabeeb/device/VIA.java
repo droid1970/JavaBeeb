@@ -194,11 +194,6 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
     }
 
     @Override
-    public boolean isNMI() {
-        return false;
-    }
-
-    @Override
     public boolean isIRQ() {
         return (ifr & 0x80) != 0;
     }

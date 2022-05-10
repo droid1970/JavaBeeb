@@ -76,11 +76,6 @@ public class VideoULA extends AbstractMemoryMappedDevice implements InterruptSou
     }
 
     @Override
-    public boolean isNMI() {
-        return false;
-    }
-
-    @Override
     public int readRegister(int index) {
         // Registers are write-only
         return 0;

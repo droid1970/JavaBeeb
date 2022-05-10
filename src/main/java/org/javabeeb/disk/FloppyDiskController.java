@@ -68,9 +68,6 @@ public class FloppyDiskController extends AbstractMemoryMappedDevice implements 
 
     private void nmi() {
         cpu.requestNMI((status & 8) != 0);
-//        if ((status & 8) != 0) {
-//            cpu.requestNMI((status & 8) != 0);
-//        }
     }
 
     public void load(final int driveIndex, final File file) throws IOException {
@@ -83,11 +80,6 @@ public class FloppyDiskController extends AbstractMemoryMappedDevice implements 
     @Override
     public boolean isIRQ() {
         return false;
-    }
-
-    @Override
-    public boolean isNMI() {
-        return (status & 8) != 0;
     }
 
     @Override

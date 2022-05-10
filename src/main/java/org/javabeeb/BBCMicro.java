@@ -281,11 +281,6 @@ public final class BBCMicro implements InterruptSource {
         interruptSources[interruptSources.length - 1] = source;
     }
 
-    @Override
-    public String getName() {
-        return "BBC Micro Model B";
-    }
-
     public Clock getClock() {
         return clock;
     }
@@ -294,16 +289,6 @@ public final class BBCMicro implements InterruptSource {
     public boolean isIRQ() {
         for (InterruptSource s : interruptSources) {
             if (s.isIRQ()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isNMI() {
-        for (InterruptSource s : interruptSources) {
-            if (s.isNMI()) {
                 return true;
             }
         }

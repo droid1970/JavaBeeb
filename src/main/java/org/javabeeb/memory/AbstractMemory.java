@@ -4,7 +4,9 @@ import org.javabeeb.cpu.InstructionSet;
 import org.javabeeb.util.StateKey;
 import org.javabeeb.util.Util;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.IntConsumer;
 
 public abstract class AbstractMemory implements Memory {

@@ -1,6 +1,6 @@
 package org.javabeeb.screen;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Arrays;
 
 public final class SystemPalette {

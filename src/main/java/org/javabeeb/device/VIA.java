@@ -1,8 +1,8 @@
 package org.javabeeb.device;
 
+import org.javabeeb.clock.ClockListener;
 import org.javabeeb.clock.ClockSpeed;
 import org.javabeeb.util.InterruptSource;
-import org.javabeeb.clock.ClockListener;
 import org.javabeeb.util.StateKey;
 import org.javabeeb.util.SystemStatus;
 

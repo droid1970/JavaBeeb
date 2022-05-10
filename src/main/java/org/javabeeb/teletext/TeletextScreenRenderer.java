@@ -4,12 +4,11 @@ import org.javabeeb.clock.ClockSpeed;
 import org.javabeeb.device.Crtc6845;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.device.VideoULA;
-import org.javabeeb.screen.AbstractScreenRenderer;
 import org.javabeeb.memory.Memory;
+import org.javabeeb.screen.AbstractScreenRenderer;
 import org.javabeeb.screen.SystemPalette;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;

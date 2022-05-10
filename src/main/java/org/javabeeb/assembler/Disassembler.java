@@ -1,10 +1,10 @@
 package org.javabeeb.assembler;
 
-import org.javabeeb.cpu.InstructionSet;
-import org.javabeeb.memory.Memory;
 import org.javabeeb.cpu.AddressMode;
 import org.javabeeb.cpu.Instruction;
 import org.javabeeb.cpu.InstructionKey;
+import org.javabeeb.cpu.InstructionSet;
+import org.javabeeb.memory.Memory;
 
 import java.util.Objects;
 

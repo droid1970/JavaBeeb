@@ -7,9 +7,7 @@ import org.javabeeb.device.VideoULA;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.util.Util;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
 import java.util.Objects;

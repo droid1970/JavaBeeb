@@ -1,9 +1,9 @@
 package org.javabeeb.localfs;
 
+import org.javabeeb.BBCMicro;
 import org.javabeeb.cpu.Cpu;
 import org.javabeeb.cpu.CpuUtil;
 import org.javabeeb.cpu.Flag;
-import org.javabeeb.BBCMicro;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.util.Util;
 
@@ -58,7 +58,7 @@ public class LocalFilingSystem extends FilingSystem {
     }
 
     @Override
-    protected void initialiseCommandHandlers(Cpu cpu, Memory memory, final Map<String, FilingSystem.CommandHandler> handlers) {
+    protected void initialiseCommandHandlers(Cpu cpu, Memory memory, final Map<String, CommandHandler> handlers) {
         handlers.put(LS_COMMAND_NAME, (args) -> listFiles(cpu));
         handlers.put(DIR_COMMAND_NAME, (args) -> listFiles(cpu));
         handlers.put(CD_COMMAND_NAME, (args) -> changeDirectory(cpu, memory, args));

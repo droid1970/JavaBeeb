@@ -1,6 +1,6 @@
 package org.javabeeb.screen;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import java.awt.*;
 
 class RoundIcon implements Icon {

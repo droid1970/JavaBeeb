@@ -1,13 +1,15 @@
 package org.javabeeb.cpu;
 
+import org.javabeeb.assembler.Disassembler;
 import org.javabeeb.clock.ClockListener;
 import org.javabeeb.clock.ClockSpeed;
 import org.javabeeb.device.Device;
-import org.javabeeb.assembler.Disassembler;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.util.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;

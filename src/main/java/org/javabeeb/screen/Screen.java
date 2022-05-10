@@ -1,30 +1,30 @@
 package org.javabeeb.screen;
 
+import org.javabeeb.BBCMicro;
+import org.javabeeb.clock.ClockListener;
 import org.javabeeb.clock.ClockSpeed;
 import org.javabeeb.device.Crtc6845;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.device.VideoULA;
-import org.javabeeb.BBCMicro;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.teletext.TeletextScreenRenderer;
-import org.javabeeb.clock.ClockListener;
 import org.javabeeb.util.SystemStatus;
 import org.javabeeb.util.Util;
 
+import javax.swing.Timer;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.Timer;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
+import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;

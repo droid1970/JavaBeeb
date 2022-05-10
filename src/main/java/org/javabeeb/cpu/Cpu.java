@@ -91,7 +91,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     private int fetchDelayMillis = 0;
     private Predicate<Cpu> fetchDelayCondition;
 
-    private boolean haltIfPCLoop = false;
+    private boolean haltIfPCLoop = false; // For unit tests
 
     public Cpu(final SystemStatus systemStatus, final Scheduler scheduler, final Memory memory) {
         this.systemStatus = Objects.requireNonNull(systemStatus);

@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class ADC extends AbstractMemoryMappedDevice {
 
-    private final Scheduler scheduler;
     private final SystemVIA systemVIA;
 
     private int status = 0x40;
@@ -19,12 +18,12 @@ public class ADC extends AbstractMemoryMappedDevice {
 
     public ADC(final SystemStatus systemStatus, final String name, final int startAddress, final Scheduler scheduler, final SystemVIA systemVIA) {
         super(systemStatus, name, startAddress, 32);
-        this.scheduler = Objects.requireNonNull(scheduler);
         this.systemVIA = Objects.requireNonNull(systemVIA);
         this.task = scheduler.newTask(this::onComplete);
     }
 
     private void onComplete() {
+        // Intended to do nothing
         int val = 0x8000;
         this.status = (this.status & 0x0f) | 0x40 | ((val >>> 10) & 0x03);
         this.low = val & 0xff;

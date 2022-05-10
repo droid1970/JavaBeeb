@@ -131,26 +131,26 @@ public final class BBCMicro implements InterruptSource {
             devices.add(fdc);
         }
         devices.add(pagedRomSelect);
-        devices.add(new SheilaMemoryMappedDevice(systemStatus));
 
-        if (fdc != null) {
-            fdc.load(0, new File(System.getProperty("user.home"), "Arcadians.ssd"));
-            fdc.load(1, new File(System.getProperty("user.home"), "Arcadians.ssd"));
-        }
+        // Always add this one at the end
+        devices.add(new SheilaMemoryMappedDevice(systemStatus));
 
         final ReadOnlyMemory basicRom = ReadOnlyMemory.fromResource(0x8000, BASIC_ROM_RESOURCE_NAME);
         final ReadOnlyMemory dfsRom = ReadOnlyMemory.fromResource(0x8000, DFS_ROM_RESOURCE_NAME);
         final FilingSystem filingSystemROM = new LocalFilingSystem("Local DFS", "(C) Ian T 2022");
         final Map<Integer, ReadOnlyMemory> roms = new HashMap<>();
+
+        // Install BASIC ROM
         roms.put(15, basicRom);
 
+        // Install Filing System ROM
         if (INSTALL_DFS) {
             roms.put(12, dfsRom);
         } else {
             roms.put(12, filingSystemROM);
         }
 
-        final PagedROM pagedROM = new PagedROM(0x8000, 16384, pagedRomSelect, roms);
+        final PagedROM pagedROM = new PagedROM(0x8000, 16_384, pagedRomSelect, roms);
         final Memory osRom = ReadOnlyMemory.fromResource(0xC000, OS_ROM_RESOURCE_NAME);
         this.ram = new RandomAccessMemory(0, 32768);
 
@@ -164,6 +164,7 @@ public final class BBCMicro implements InterruptSource {
                 crtc6845,
                 systemVIA
         );
+
         screen.addKeyDownListener(systemVIA::keyDown);
         screen.addKeyUpListener(systemVIA::keyUp);
         crtc6845.addNewFrameListener(screen::newFrame);
@@ -175,7 +176,6 @@ public final class BBCMicro implements InterruptSource {
         if (fdc != null) {
             this.fdc.setCpu(cpu);
         }
-
         this.clock = new Clock(
                 systemStatus,
                 ClockDefinition.CR200,
@@ -190,38 +190,6 @@ public final class BBCMicro implements InterruptSource {
             addInterruptSource(fdc);
         }
         cpu.setInterruptSource(this);
-        if (false) scheduler.newTask(() -> {
-            try {
-                final Disassembler dis = new Disassembler(new InstructionSet(), memory);
-                dis.setPC(0x1C28);
-                for (int i = 0; i < 100; i++) {
-                    System.out.println(dis.disassemble());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }).schedule(50_000_000);
-
-        final int KEYV = 0xEF02;
-        final int INSV = 0xE4B3;
-
-        if (false) memory.installIntercept(KEYV, new AtomicFetchIntercept(cpu, () -> {
-            final boolean C = cpu.isFlagSet(Flag.CARRY);
-            final boolean V = cpu.isFlagSet(Flag.OVERFLOW);
-            if (!C && !V) {
-                //System.err.println("KEYV - test SHIFT/CTRL");
-            } else if (C && !V) {
-                final int retLO = cpu.peekByte(7);
-                final int retHI = cpu.peekByte(8);
-                final int ret = (retLO & 0xFF) | ((retHI & 0xFF) << 8);
-                //cpu.onReturnTo(ret, () -> System.err.println("KEYV - returned to " + Util.formatHexWord(ret + 1) + " with key pressed = " + ((cpu.getX() & 0x80) != 0)));
-                //System.err.println("KEYV - scan keyboard (OSBYTE &79): code = " + Util.formatHexByte(cpu.getX() & 0x7f) + " key = " + BBCKey.forInternalCode(cpu.getX() & 0x7F) + " scan = " + ((cpu.getX() & 0x80) != 0) + " ret = " + Util.formatHexWord(ret));
-            } else if (!C && V) {
-                //System.err.println("KEYV - key pressed interrupt");
-            } else {
-                //System.err.println("KEYV - timer interrupt entry");
-            }
-        }), false);
     }
 
     private State savedState;

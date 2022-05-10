@@ -1,7 +1,7 @@
 package org.javabeeb.device;
 
 import org.javabeeb.clock.ClockListener;
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.util.InterruptSource;
 import org.javabeeb.util.StateKey;
 import org.javabeeb.util.SystemStatus;
@@ -13,10 +13,11 @@ import java.util.Objects;
 @StateKey(key = "crtc6845")
 public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSource, ClockListener {
 
-    private static final int CLOCK_RATE = ClockSpeed.TWO_MHZ;
+    // The clock rate that this is assumed to run at
+    private static final int CLOCK_DEFINITION = ClockDefinition.TWO_MHZ;
 
-    private static final int VERTICAL_SYNC_FREQUENCY_HZ = ClockSpeed.FIFTY_HZ;
-    private static final int VERTICAL_SYNC_2MHZ_CYCLES = CLOCK_RATE / VERTICAL_SYNC_FREQUENCY_HZ;
+    private static final int VERTICAL_SYNC_FREQUENCY_HZ = ClockDefinition.FIFTY_HZ;
+    private static final int VERTICAL_SYNC_2MHZ_CYCLES = CLOCK_DEFINITION / VERTICAL_SYNC_FREQUENCY_HZ;
 
     private static final int FAST_CURSOR_VSYNCS = 8;
     private static final int SLOW_CURSOR_VSYNCS = 16;
@@ -61,7 +62,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
     }
 
     @Override
-    public void tick(final ClockSpeed clockSpeed, final long elapsedNanos) {
+    public void tick(final ClockDefinition clockDefinition, final long elapsedNanos) {
         final int cyclesPerRow = VERTICAL_SYNC_2MHZ_CYCLES / getVerticalTotalChars();
         final int cyclesPerScanline = VERTICAL_SYNC_2MHZ_CYCLES / (getVerticalTotalChars() * 8);
         final int syncPulseOnCycles = getVerticalSyncPosition() * cyclesPerRow;
@@ -100,7 +101,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
             firedSyncOff = false;
         }
 
-        myCycleCount += clockSpeed.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
+        myCycleCount += clockDefinition.computeElapsedCycles(CLOCK_DEFINITION, inputCycleCount, myCycleCount, elapsedNanos);
         inputCycleCount++;
     }
 

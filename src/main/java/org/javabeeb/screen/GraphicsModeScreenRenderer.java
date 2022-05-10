@@ -1,6 +1,6 @@
 package org.javabeeb.screen;
 
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.device.Crtc6845;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.device.VideoULA;
@@ -14,7 +14,8 @@ import java.util.Objects;
 
 public class GraphicsModeScreenRenderer extends AbstractScreenRenderer {
 
-    private static final int CLOCK_RATE = ClockSpeed.TWO_MHZ;
+    // The clock rate that this is assumed to run at
+    private static final int CLOCK_RATE = ClockDefinition.TWO_MHZ;
 
     private final Screen screen;
 
@@ -102,8 +103,8 @@ public class GraphicsModeScreenRenderer extends AbstractScreenRenderer {
     }
 
     @Override
-    public void tick(final BufferedImage image, final ClockSpeed clockSpeed, final long elapsedNanos) {
-        final int cycles = clockSpeed.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
+    public void tick(final BufferedImage image, final ClockDefinition clockDefinition, final long elapsedNanos) {
+        final int cycles = clockDefinition.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
         inputCycleCount++;
         myCycleCount += cycles;
         if (cycles <= 0) {

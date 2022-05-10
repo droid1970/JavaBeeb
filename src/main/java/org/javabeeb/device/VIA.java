@@ -1,7 +1,7 @@
 package org.javabeeb.device;
 
 import org.javabeeb.clock.ClockListener;
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.util.InterruptSource;
 import org.javabeeb.util.StateKey;
 import org.javabeeb.util.SystemStatus;
@@ -11,7 +11,8 @@ import org.javabeeb.util.SystemStatus;
 //
 public class VIA extends AbstractMemoryMappedDevice implements ClockListener, InterruptSource {
 
-    private static final int CLOCK_RATE = ClockSpeed.TWO_MHZ;
+    // The clock rate that this is assumed to run at
+    private static final int CLOCK_RATE = ClockDefinition.TWO_MHZ;
 
     private static final int ORB = 0x0;
     private static final int ORA = 0x1;
@@ -147,8 +148,8 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
     }
 
     @Override
-    public void tick(final ClockSpeed clockSpeed, final long elapsedNanos) {
-        final int cycles = clockSpeed.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
+    public void tick(final ClockDefinition clockDefinition, final long elapsedNanos) {
+        final int cycles = clockDefinition.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
         inputCycleCount++;
         myCycleCount += cycles;
         if (cycles <= 0) {

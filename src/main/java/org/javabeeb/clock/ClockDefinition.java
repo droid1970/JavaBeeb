@@ -3,25 +3,25 @@ package org.javabeeb.clock;
 import java.util.Arrays;
 import java.util.Objects;
 
-public final class ClockSpeed {
+public final class ClockDefinition {
 
     public static final int MHZ = 1_000_000;    // Don't change this
     public static final int TWO_MHZ = 2 * MHZ;  // Don't change this
     public static final int FIFTY_HZ = 50;      // Don't change this
 
-    public static final ClockSpeed CR200 = new ClockSpeed("2.0 Mhz", 2 * MHZ, true);
-    public static final ClockSpeed CR400 = new ClockSpeed("4.0 Mhz", 4 * MHZ, true);
-    public static final ClockSpeed CR600 = new ClockSpeed("6.0 Mhz", 6 * MHZ, true);
-    public static final ClockSpeed CR800 = new ClockSpeed("8.0 Mhz", 8 * MHZ, true);
+    public static final ClockDefinition CR200 = new ClockDefinition("2.0 Mhz", 2 * MHZ, true);
+    public static final ClockDefinition CR400 = new ClockDefinition("4.0 Mhz", 4 * MHZ, true);
+    public static final ClockDefinition CR600 = new ClockDefinition("6.0 Mhz", 6 * MHZ, true);
+    public static final ClockDefinition CR800 = new ClockDefinition("8.0 Mhz", 8 * MHZ, true);
 
-    public static final ClockSpeed MAX = new ClockSpeed("Maximum", 397 * MHZ, false);
+    public static final ClockDefinition MAX = new ClockDefinition("Maximum", 397 * MHZ, false);
 
     private final String displayName;
     private final int clockRate;
     private final boolean throttled;
     private final boolean fitsExactly;
 
-    private static final ClockSpeed[] STANDARD_VALUES = {
+    private static final ClockDefinition[] STANDARD_VALUES = {
             CR200,
             CR400,
             CR600,
@@ -29,7 +29,7 @@ public final class ClockSpeed {
             MAX
     };
 
-    public ClockSpeed(final String displayName, final int clockRate, final boolean throttled) {
+    public ClockDefinition(final String displayName, final int clockRate, final boolean throttled) {
         this.displayName = Objects.requireNonNull(displayName);
         this.clockRate = clockRate;
         this.throttled = throttled;
@@ -61,7 +61,7 @@ public final class ClockSpeed {
                 return CLOCK_RATE / clockRate;
             }
         } else {
-            long cyclesSince = ClockSpeed.computeElapsedCycles(CLOCK_RATE, elapsedNanos);
+            long cyclesSince = ClockDefinition.computeElapsedCycles(CLOCK_RATE, elapsedNanos);
             return Math.max(0, (int) (cyclesSince - myCycleCount));
         }
     }
@@ -87,7 +87,7 @@ public final class ClockSpeed {
         return elapsedNanos / nanosPerCycle;
     }
 
-    public static ClockSpeed[] getStandardValues() {
+    public static ClockDefinition[] getStandardValues() {
         return Arrays.copyOf(STANDARD_VALUES, STANDARD_VALUES.length);
     }
 
@@ -95,7 +95,7 @@ public final class ClockSpeed {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClockSpeed that = (ClockSpeed) o;
+        ClockDefinition that = (ClockDefinition) o;
         return clockRate == that.clockRate && throttled == that.throttled;
     }
 

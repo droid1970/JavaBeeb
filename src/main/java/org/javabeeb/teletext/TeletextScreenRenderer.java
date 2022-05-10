@@ -1,6 +1,6 @@
 package org.javabeeb.teletext;
 
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.device.Crtc6845;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.device.VideoULA;
@@ -35,7 +35,7 @@ public final class TeletextScreenRenderer extends AbstractScreenRenderer {
     }
 
     @Override
-    public void tick(final BufferedImage image, final ClockSpeed clockSpeed, final long elapsedNanos) {
+    public void tick(final BufferedImage image, final ClockDefinition clockDefinition, final long elapsedNanos) {
         throw new UnsupportedOperationException();
     }
 

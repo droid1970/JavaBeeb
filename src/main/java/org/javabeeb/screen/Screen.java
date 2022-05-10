@@ -2,7 +2,7 @@ package org.javabeeb.screen;
 
 import org.javabeeb.BBCMicro;
 import org.javabeeb.clock.ClockListener;
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.device.Crtc6845;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.device.VideoULA;
@@ -104,9 +104,9 @@ public final class Screen implements ClockListener {
     }
 
     @Override
-    public void tick(final ClockSpeed clockSpeed, final long elapsedNanos) {
+    public void tick(final ClockDefinition clockDefinition, final long elapsedNanos) {
         if (renderer != null && renderer.isClockBased()) {
-            renderer.tick(getImageToPaint(), clockSpeed, elapsedNanos);
+            renderer.tick(getImageToPaint(), clockDefinition, elapsedNanos);
         }
     }
 
@@ -228,7 +228,7 @@ public final class Screen implements ClockListener {
             final var verboseCheckbox = createCheckbox("verbose");
             verboseCheckbox.addActionListener(e -> {
                 verbose = !verbose;
-                bbc.getCpu().setVerboseCondition(verbose ? () -> bbc.getCpu().getPC() < 0x8000 : () -> false);
+                bbc.getCpu().setVerboseCondition(verbose ? () ->true : () -> false);
                 bbc.getCpu().setFetchDelayMillis(verbose ? 1 : 0);
                 bbc.getCpu().setFetchDelayCondition(verbose ? cpu -> cpu.getPC() < 0x8000 : null);
             });
@@ -249,7 +249,7 @@ public final class Screen implements ClockListener {
 //            add(Box.createRigidArea(new Dimension(4,0)));
 //            add(speedCombo);
 
-            final JCheckBox keyMapCheckbox = createCheckbox("gamemap");
+            final JCheckBox keyMapCheckbox = createCheckbox("logical map");
             keyMapCheckbox.setSelected(false);
             keyMapCheckbox.addActionListener(e -> {
                 systemVIA.swapKeyMap();

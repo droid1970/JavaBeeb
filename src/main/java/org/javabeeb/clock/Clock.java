@@ -17,10 +17,11 @@ public final class Clock {
     private final SystemStatus systemStatus;
     private final ClockListener[] listeners;
     private final long maxCycleCount;
+    private volatile boolean paused;
     private long cycleCount;
     private long cycleCountSinceReset;
 
-    private ClockSpeed clockSpeed = ClockSpeed.CR200;
+    private ClockDefinition definition = ClockDefinition.CR200;
     private long initialDelayNanos;
     private long delayNanos;
 
@@ -28,12 +29,12 @@ public final class Clock {
 
     public Clock(
             final SystemStatus systemStatus,
-            final ClockSpeed clockSpeed,
+            final ClockDefinition definition,
             final long maxCycleCount,
             final List<ClockListener> listeners
     ) {
         this.systemStatus = Objects.requireNonNull(systemStatus);
-        setClockSpeed(clockSpeed);
+        setDefinition(definition);
         this.maxCycleCount = maxCycleCount;
         this.listeners = new ClockListener[listeners.size()];
         for (int i = 0; i < listeners.size(); i++) {
@@ -41,13 +42,13 @@ public final class Clock {
         }
     }
 
-    public ClockSpeed getClockSpeed() {
-        return clockSpeed;
+    public ClockDefinition getDefinition() {
+        return definition;
     }
 
-    public void setClockSpeed(final ClockSpeed clockSpeed) {
-        this.clockSpeed = Objects.requireNonNull(clockSpeed);
-        this.delayNanos = 1_000_000_000L / clockSpeed.getClockRate();
+    public void setDefinition(final ClockDefinition definition) {
+        this.definition = Objects.requireNonNull(definition);
+        this.delayNanos = 1_000_000_000L / definition.getClockRate();
         this.initialDelayNanos = this.delayNanos;
     }
 
@@ -55,20 +56,11 @@ public final class Clock {
         return cycleCount;
     }
 
-    private long pausedTime = 0L;
-
-    private volatile boolean paused;
-
     public void setPaused(final boolean paused) {
         for (ClockListener l : listeners) {
             l.setPaused(paused);
         }
-
-        if (paused) {
-            this.paused = true;
-        } else {
-            this.paused = false;
-        }
+        this.paused = paused;
     }
 
     public void run(final BooleanSupplier stopCondition) {
@@ -89,7 +81,7 @@ public final class Clock {
 
             // Send tick to all the listeners
             for (ClockListener l : listeners) {
-                l.tick(clockSpeed, nanoTime - firstStartTime);
+                l.tick(definition, nanoTime - firstStartTime);
             }
 
             cycleCount++;
@@ -102,7 +94,7 @@ public final class Clock {
             }
 
             // Reset every second or so
-            if (cycleCountSinceReset >= Math.min(clockSpeed.getClockRate(), MAX_RESET_CYCLES)) {
+            if (cycleCountSinceReset >= Math.min(definition.getClockRate(), MAX_RESET_CYCLES)) {
                 resetTime = resetDelay(resetTime, true);
             }
         }
@@ -118,9 +110,10 @@ public final class Clock {
     }
 
     private void adjustDelay(final long durationNanos) {
+        // Adjust delay between cycles in order to maintain average clock rate
         final double secs = (double) durationNanos / 1_000_000_000L;
         final double cps = cycleCountSinceReset / secs;
-        final double delta = cps / clockSpeed.getClockRate();
+        final double delta = cps / definition.getClockRate();
         delayNanos = Math.min(initialDelayNanos, Math.max(10L, (long) (delayNanos * delta)));
     }
 
@@ -136,10 +129,11 @@ public final class Clock {
     }
 
     private long awaitNextCycle() {
+        // This is heavy on CPU but, for clockrates < 4Mhz, results in an (on average) very precise clock
         long nanoTime;
         do {
             nanoTime = System.nanoTime();
-        } while (clockSpeed.isThrottled() && nextTickTime > 0L && ((nextTickTime - nanoTime) > 0));
+        } while (definition.isThrottled() && nextTickTime > 0L && ((nextTickTime - nanoTime) > 0));
         nextTickTime += delayNanos;
         return nanoTime;
     }

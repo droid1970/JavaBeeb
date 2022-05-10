@@ -2,7 +2,7 @@ package org.javabeeb.cpu;
 
 import org.javabeeb.assembler.Disassembler;
 import org.javabeeb.clock.ClockListener;
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.device.Device;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.util.*;
@@ -270,8 +270,8 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     }
 
     @Override
-    public void tick(final ClockSpeed clockSpeed, final long elapsedNanos) {
-        scheduler.tick(clockSpeed, elapsedNanos);
+    public void tick(final ClockDefinition clockDefinition, final long elapsedNanos) {
+        scheduler.tick(clockDefinition, elapsedNanos);
         pcDis = pc;
         if (queue.isEmpty()) {
             if (!servicingInterrupt) {
@@ -315,7 +315,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     @Override
     public void run() {
         while (!halted) {
-            tick(ClockSpeed.CR200, 0L);
+            tick(ClockDefinition.CR200, 0L);
         }
     }
 
@@ -365,7 +365,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
         pushByte(pcDec & 0xFF);
         setPC(address);
         while (pc != pcNow) {
-            tick(ClockSpeed.CR200, 0L);
+            tick(ClockDefinition.CR200, 0L);
         }
     }
 

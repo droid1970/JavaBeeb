@@ -2,7 +2,7 @@ package org.javabeeb;
 
 import org.javabeeb.assembler.Disassembler;
 import org.javabeeb.clock.Clock;
-import org.javabeeb.clock.ClockSpeed;
+import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.cpu.Cpu;
 import org.javabeeb.cpu.Flag;
 import org.javabeeb.cpu.InstructionSet;
@@ -178,7 +178,7 @@ public final class BBCMicro implements InterruptSource {
 
         this.clock = new Clock(
                 systemStatus,
-                ClockSpeed.CR200,
+                ClockDefinition.CR200,
                 Long.MAX_VALUE,
                 Arrays.asList(cpu, systemVIA, userVIA, crtc6845, screen)
         );

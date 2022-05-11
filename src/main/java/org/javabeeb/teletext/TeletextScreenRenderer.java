@@ -40,11 +40,6 @@ public final class TeletextScreenRenderer extends AbstractScreenRenderer {
     }
 
     @Override
-    public boolean isImageReady() {
-        return true;
-    }
-
-    @Override
     public void newFrame() {
         throw new UnsupportedOperationException();
     }

@@ -52,31 +52,11 @@ public final class BBCMicro implements InterruptSource {
     private final FloppyDiskController fdc;
     private final PagedRomSelect pagedRomSelect;
     private final RandomAccessMemory ram;
+    private final Memory memory;
 
     private final Cpu cpu;
 
-
     private final Clock clock;
-
-    public SystemStatus getSystemStatus() {
-        return systemStatus;
-    }
-
-    public Cpu getCpu() {
-        return cpu;
-    }
-
-    public Memory getRam() {
-        return ram;
-    }
-
-    public SystemVIA getSystemVIA() {
-        return systemVIA;
-    }
-
-    public Screen getScreen() {
-        return screen;
-    }
 
     public BBCMicro() throws Exception {
 
@@ -157,7 +137,7 @@ public final class BBCMicro implements InterruptSource {
         final Memory osRom = ReadOnlyMemory.fromResource(0xC000, OS_ROM_RESOURCE_NAME);
         this.ram = new RandomAccessMemory(0, 32768);
 
-        final Memory memory = Memory.bbcMicroB(devices, ram, pagedROM, osRom);
+        this.memory = Memory.bbcMicroB(devices, ram, pagedROM, osRom);
 
         this.screen = new Screen(
                 systemStatus,
@@ -191,6 +171,34 @@ public final class BBCMicro implements InterruptSource {
             addInterruptSource(fdc);
         }
         cpu.setInterruptSource(this);
+    }
+
+    public SystemStatus getSystemStatus() {
+        return systemStatus;
+    }
+
+    public Cpu getCpu() {
+        return cpu;
+    }
+
+    public Memory getMemory() {
+        return memory;
+    }
+
+    public Crtc6845 getCrtc6845() {
+        return crtc6845;
+    }
+
+    public SystemVIA getSystemVIA() {
+        return systemVIA;
+    }
+
+    public VideoULA getVideoULA() {
+        return videoULA;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 
     private State savedState;

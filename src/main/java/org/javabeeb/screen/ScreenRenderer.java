@@ -11,5 +11,4 @@ public interface ScreenRenderer {
     void newFrame();
 
     void refreshWholeImage(BufferedImage image);
-    boolean isImageReady();
 }

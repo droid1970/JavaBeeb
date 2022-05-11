@@ -127,11 +127,6 @@ public class GraphicsModeScreenRenderer extends AbstractScreenRenderer {
         }
     }
 
-    @Override
-    public boolean isImageReady() {
-        return scanLine >= scanLineCount;
-    }
-
     private void paintNextCharacter(final BufferedImage img) {
 
         // TODO: Only fetch these after a material change in Videa ULA

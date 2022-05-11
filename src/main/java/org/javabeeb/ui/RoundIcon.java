@@ -1,9 +1,9 @@
-package org.javabeeb.screen;
+package org.javabeeb.ui;
 
 import javax.swing.*;
 import java.awt.*;
 
-class RoundIcon implements Icon {
+public class RoundIcon implements Icon {
 
     private final int width;
     private final int height;
@@ -11,13 +11,13 @@ class RoundIcon implements Icon {
 
     private Color colour;
 
-    RoundIcon(final int width, final int height, final int yoffset) {
+    public RoundIcon(final int width, final int height, final int yoffset) {
         this.width = width;
         this.height = height;
         this.yoffset = yoffset;
     }
 
-    void setColour(final Color colour) {
+    public void setColour(final Color colour) {
         this.colour = colour;
     }
 

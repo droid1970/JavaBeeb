@@ -1,11 +1,8 @@
 package org.javabeeb;
 
-import org.javabeeb.assembler.Disassembler;
 import org.javabeeb.clock.Clock;
 import org.javabeeb.clock.ClockDefinition;
 import org.javabeeb.cpu.Cpu;
-import org.javabeeb.cpu.Flag;
-import org.javabeeb.cpu.InstructionSet;
 import org.javabeeb.device.*;
 import org.javabeeb.disk.FloppyDiskController;
 import org.javabeeb.localfs.FilingSystem;
@@ -45,6 +42,7 @@ public final class BBCMicro implements InterruptSource {
     private InterruptSource[] interruptSources = new InterruptSource[0];
     private final SystemStatus systemStatus;
 
+    private final Screen screen;
     private final VideoULA videoULA;
     private final SystemVIA systemVIA;
     private final SoundChip soundChip;
@@ -56,6 +54,7 @@ public final class BBCMicro implements InterruptSource {
     private final RandomAccessMemory ram;
 
     private final Cpu cpu;
+
 
     private final Clock clock;
 
@@ -73,6 +72,10 @@ public final class BBCMicro implements InterruptSource {
 
     public SystemVIA getSystemVIA() {
         return systemVIA;
+    }
+
+    public Screen getScreen() {
+        return screen;
     }
 
     public BBCMicro() throws Exception {
@@ -156,7 +159,7 @@ public final class BBCMicro implements InterruptSource {
 
         final Memory memory = Memory.bbcMicroB(devices, ram, pagedROM, osRom);
 
-        final Screen screen = new Screen(
+        this.screen = new Screen(
                 systemStatus,
                 this,
                 memory,
@@ -165,8 +168,6 @@ public final class BBCMicro implements InterruptSource {
                 systemVIA
         );
 
-        screen.addKeyDownListener(systemVIA::keyDown);
-        screen.addKeyUpListener(systemVIA::keyUp);
         crtc6845.addNewFrameListener(screen::newFrame);
 
         this.cpu = new Cpu(systemStatus, scheduler, memory);

@@ -1,4 +1,4 @@
-package org.javabeeb;
+package org.javabeeb.cpu;
 
 import org.javabeeb.cpu.Cpu;
 import org.javabeeb.memory.AbstractMemory;

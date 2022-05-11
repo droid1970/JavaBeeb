@@ -1,7 +1,6 @@
-package org.javabeeb;
+package org.javabeeb.cpu;
 
 import org.javabeeb.assembler.Assembler;
-import org.javabeeb.cpu.*;
 import org.javabeeb.memory.Memory;
 import org.javabeeb.util.DefaultScheduler;
 import org.javabeeb.util.SystemStatus;

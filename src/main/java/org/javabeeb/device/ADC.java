@@ -6,6 +6,9 @@ import org.javabeeb.util.SystemStatus;
 
 import java.util.Objects;
 
+//
+// Mostly based on  https://github.com/mattgodbolt/jsbeeb/adc.js by Matt Godbolt
+//
 public class ADC extends AbstractMemoryMappedDevice {
 
     private final SystemVIA systemVIA;

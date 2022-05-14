@@ -52,7 +52,7 @@ public class VideoULA extends AbstractMemoryMappedDevice implements InterruptSou
             0b01010101
     };
 
-    private SystemPalette systemPalette = SystemPalette.DEFAULT;
+    private final SystemPalette systemPalette = SystemPalette.DEFAULT;
 
     @StateKey(key = "videoControlRegister")
     private int videoControlRegister;

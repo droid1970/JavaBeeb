@@ -17,9 +17,6 @@ public class MemoryUtils {
     }
 
     private static void processS19Line(final Memory memory, final String line, final int offset) {
-        if ("S109FFFA9D37A337AB376D".equals(line)) {
-            int x = 1;
-        }
         final int code = Integer.parseInt("" + line.charAt(1), 16);
         final int count = Integer.parseInt(line.substring(2, 4), 16) - 3;
         switch (code) {
@@ -38,7 +35,6 @@ public class MemoryUtils {
             }
             default:
                 // Ignored
-
         }
     }
 }

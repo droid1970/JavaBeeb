@@ -56,7 +56,7 @@ public final class CompoundMemory implements Memory {
 
     @Override
     public boolean hasAddress(int address) {
-        return regions.stream().anyMatch(r -> r.hasAddress(address));
+        return address >= minAddress && address <= maxAddress && map[address] != null;
     }
 
     @Override
@@ -86,16 +86,6 @@ public final class CompoundMemory implements Memory {
         } else {
             throw cannotAccessException(address);
         }
-    }
-
-    @Override
-    public int readWord(int address) {
-        return getRegion(address).readWord(address);
-    }
-
-    @Override
-    public void writeWord(int address, int value) {
-        getRegion(address).writeWord(address, value);
     }
 
     @Override

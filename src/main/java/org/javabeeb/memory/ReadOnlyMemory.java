@@ -18,7 +18,6 @@ public class ReadOnlyMemory extends AbstractMemory {
             }
         }
 
-        int x = 1;
         return new ReadOnlyMemory(codeStart, data);
     }
 

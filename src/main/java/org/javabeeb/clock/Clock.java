@@ -129,7 +129,7 @@ public final class Clock {
     }
 
     private long awaitNextCycle() {
-        // This is heavy on CPU but, for clockrates < 4Mhz, results in an (on average) very precise clock
+        // This is heavy on CPU but, for clockrates < 4Mhz, results in an, on average, very precise clock
         long nanoTime;
         do {
             nanoTime = System.nanoTime();

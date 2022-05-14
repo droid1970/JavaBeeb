@@ -139,8 +139,8 @@ public class MainFrame extends JFrame {
             add(capsLockLabel);
 
             screenLabel = createLabel();
-//            add(Box.createRigidArea(new Dimension(8,0)));
-//            add(screenLabel);
+            add(Box.createRigidArea(new Dimension(8,0)));
+            add(screenLabel);
 
             final Dimension currentPreferredSize = getPreferredSize();
             setPreferredSize(new Dimension(currentPreferredSize.width, currentPreferredSize.height - 6));
@@ -177,8 +177,7 @@ public class MainFrame extends JFrame {
                 // Ignored
             }
             clockLabel.setText(mhzString + " Mhz");
-            final String displayRefreshString = systemStatus.getString(SystemStatus.KEY_AVG_DISPLAY_REFRESH_TIME_MILLIS, "?");
-            screenLabel.setText("vsync = " + Util.formatDouble(systemStatus.getDouble(SystemStatus.KEY_VSYNCS_PER_SECOND, 0.0)));
+            screenLabel.setText("fps = " + Util.formatDouble(systemStatus.getDouble(SystemStatus.FRAMES_PER_SECOND, 0.0)));
         }
 
         @Override

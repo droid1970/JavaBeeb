@@ -19,7 +19,7 @@ public final class ClockDefinition {
     private final String displayName;
     private final int clockRate;
     private final boolean throttled;
-    private final boolean fitsExactly;
+    private final boolean fitsTwoMhz;
 
     private static final ClockDefinition[] STANDARD_VALUES = {
             CR200,
@@ -33,10 +33,10 @@ public final class ClockDefinition {
         this.displayName = Objects.requireNonNull(displayName);
         this.clockRate = clockRate;
         this.throttled = throttled;
-        this.fitsExactly = fitsExactly(clockRate);
+        this.fitsTwoMhz = fitsTwoMhz(clockRate);
     }
 
-    private static boolean fitsExactly(final int clockRate) {
+    private static boolean fitsTwoMhz(final int clockRate) {
         if (clockRate == TWO_MHZ) {
             return true;
         } else if (clockRate > TWO_MHZ) {
@@ -46,23 +46,22 @@ public final class ClockDefinition {
         }
     }
 
-    public int computeElapsedCycles(final int CLOCK_RATE, final long inputCycleCount, final long myCycleCount, final long elapsedNanos) {
-        int cycles = 0;
-        if (fitsTwoMhz()) {
-            if (this.clockRate > CLOCK_RATE) {
+    public int computeElapsedCycles(final int targetClockRate, final long targetCycleCount, final long targetTickCount, final long elapsedNanos) {
+        if (fitsTwoMhz) {
+            if (this.clockRate > targetClockRate) {
                 // Maybe skip this
-                final int stretch = this.clockRate / CLOCK_RATE;
-                if ((inputCycleCount % stretch) != 0) {
+                final int stretch = this.clockRate / targetClockRate;
+                if ((targetCycleCount % stretch) != 0) {
                     return 0;
                 } else {
                     return 1;
                 }
             } else {
-                return CLOCK_RATE / clockRate;
+                return targetClockRate / clockRate;
             }
         } else {
-            long cyclesSince = ClockDefinition.computeElapsedCycles(CLOCK_RATE, elapsedNanos);
-            return Math.max(0, (int) (cyclesSince - myCycleCount));
+            long cyclesSince = ClockDefinition.computeElapsedCycles(targetClockRate, elapsedNanos);
+            return Math.max(0, (int) (cyclesSince - targetTickCount));
         }
     }
 
@@ -78,12 +77,8 @@ public final class ClockDefinition {
         return throttled;
     }
 
-    public boolean fitsTwoMhz() {
-        return fitsExactly;
-    }
-
-    public static long computeElapsedCycles(final int targetRate, final long elapsedNanos) {
-        final long nanosPerCycle = 1_000_000_000L / targetRate;
+    public static long computeElapsedCycles(final int targetClockRate, final long elapsedNanos) {
+        final long nanosPerCycle = 1_000_000_000L / targetClockRate;
         return elapsedNanos / nanosPerCycle;
     }
 

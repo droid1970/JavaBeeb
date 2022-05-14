@@ -17,10 +17,13 @@ public final class InstructionSet {
 
         // Special HALT instruction (for debugging and testing)
         register(Instruction.HLT, AddressMode.IMPLIED, 0x02);
+
+        // Special instructions (that would usually be NOP) for tests/traps
         register(Instruction.ERR, AddressMode.IMMEDIATE, 0x80);
         register(Instruction.TST, AddressMode.IMMEDIATE, 0x82);
         register(Instruction.TRP, AddressMode.IMMEDIATE, 0x89);
 
+        // Official instructions
         register(Instruction.ADC, AddressMode.IMMEDIATE, 0x69);
         register(Instruction.ADC, AddressMode.ZPG, 0x65);
         register(Instruction.ADC, AddressMode.ZPG_X, 0x75);

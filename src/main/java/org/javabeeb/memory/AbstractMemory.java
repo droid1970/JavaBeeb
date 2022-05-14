@@ -50,8 +50,7 @@ public abstract class AbstractMemory implements Memory {
 
     @Override
     public int readByte(int address) {
-        final int ret = memory[computeIndex(address)];
-        return ret;
+        return memory[computeIndex(address)];
     }
 
     @Override
@@ -64,13 +63,12 @@ public abstract class AbstractMemory implements Memory {
                     modifyWatches.get(address).accept(value);
                 }
             }
-            checkWriteable();
             Util.checkUnsignedByte(value);
             memory[computeIndex(address)] = value;
         }
     }
 
-    private void writeByteUnsafe(final int address, final int value) {
+    private void writeByteIgnoringReadOnly(final int address, final int value) {
         memory[computeIndex(address)] = value;
     }
 
@@ -81,7 +79,7 @@ public abstract class AbstractMemory implements Memory {
         }
         intercepts.put(address, intercept);
         if (addRTS) {
-            writeByteUnsafe(address, InstructionSet.RTS_OPCODE);
+            writeByteIgnoringReadOnly(address, InstructionSet.RTS_OPCODE);
         }
     }
 
@@ -111,13 +109,6 @@ public abstract class AbstractMemory implements Memory {
             throw new IllegalStateException(address + ": address out of range");
         }
         return address - start;
-    }
-
-    private void checkWriteable() {
-        if (true) return;
-        if (readOnly) {
-            throw new IllegalStateException("memory is read-only");
-        }
     }
 
     public void addModifyWatch(final int address, final IntConsumer valueConsumer) {

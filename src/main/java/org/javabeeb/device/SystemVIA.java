@@ -14,7 +14,6 @@ import java.util.Objects;
 //
 // Mostly based on  https://github.com/mattgodbolt/jsbeeb/via.js by Matt Godbolt
 //
-
 @StateKey(key = "systemVIA")
 public class SystemVIA extends VIA {
 

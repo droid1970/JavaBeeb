@@ -33,7 +33,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
 
     private boolean cursorOn;
     private long inputCycleCount = 0L;
-    private long myCycleCount = 0L;
+    private long tickCount = 0L;
     private long lastEndOfFrame = 0L;
     private long lastCursorBlink = 0L;
 
@@ -67,7 +67,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
         final int cyclesPerScanline = VERTICAL_SYNC_2MHZ_CYCLES / (getVerticalTotalChars() * 8);
         final int syncPulseOnCycles = getVerticalSyncPosition() * cyclesPerRow;
         final int syncPulseOffCycles = syncPulseOnCycles + getVerticalSyncPulseWidth() * cyclesPerScanline;
-        final long cyclesSinceLastNewFrame = myCycleCount - lastEndOfFrame;
+        final long cyclesSinceLastNewFrame = tickCount - lastEndOfFrame;
 
         if (!firedNewFrame) {
             // New frame (start rendering)
@@ -88,20 +88,20 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
         }
 
         final long cursorToggleCycles = VERTICAL_SYNC_2MHZ_CYCLES * ((isCursorFastBlink()) ? FAST_CURSOR_VSYNCS : SLOW_CURSOR_VSYNCS);
-        final long cyclesSinceLastCursorBlink = myCycleCount - lastCursorBlink;
+        final long cyclesSinceLastCursorBlink = tickCount - lastCursorBlink;
         if (cyclesSinceLastCursorBlink >= cursorToggleCycles) {
             cursorOn = !cursorOn;
-            lastCursorBlink = myCycleCount;
+            lastCursorBlink = tickCount;
         }
 
         if ((cyclesSinceLastNewFrame >= VERTICAL_SYNC_2MHZ_CYCLES)) {
-            lastEndOfFrame = myCycleCount;
+            lastEndOfFrame = tickCount;
             firedNewFrame = false;
             firedSyncOn = false;
             firedSyncOff = false;
         }
 
-        myCycleCount += clockDefinition.computeElapsedCycles(CLOCK_DEFINITION, inputCycleCount, myCycleCount, elapsedNanos);
+        tickCount += clockDefinition.computeElapsedCycles(CLOCK_DEFINITION, inputCycleCount, tickCount, elapsedNanos);
         inputCycleCount++;
     }
 
@@ -114,9 +114,9 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
             firstFrameTime = System.nanoTime();
         }
         frameCount++;
-        if (frameCount == 40) { // Update status every couple of seconds
+        if (frameCount == 40) { // Update FPS status every couple of seconds
             final double secs = (System.nanoTime() - firstFrameTime) / 1_000_000_000.0;
-            getSystemStatus().putDouble(SystemStatus.KEY_VSYNCS_PER_SECOND, frameCount / secs);
+            getSystemStatus().putDouble(SystemStatus.FRAMES_PER_SECOND, frameCount / secs);
             firstFrameTime = System.nanoTime();
             frameCount = 0;
         }

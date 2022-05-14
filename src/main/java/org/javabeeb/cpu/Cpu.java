@@ -1088,7 +1088,21 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
 
     private static final class OpQueue {
 
-        private final Runnable[] queue = new Runnable[16];
+        private static final int MAX_SIZE = 64;
+        private static final int MASK;
+        static {
+            if (MAX_SIZE < 16) {
+                throw new IllegalStateException(MAX_SIZE + ": MAX_SIZE must be >= 16");
+            }
+            // Enforce that size is a power of 2
+            final int shift = 32 - Integer.numberOfLeadingZeros(MAX_SIZE) - 1;
+            if (((MAX_SIZE >>> shift) << shift) != MAX_SIZE) {
+                throw new IllegalStateException(MAX_SIZE + ": MAX_SIZE must be power of 2");
+            }
+            MASK = MAX_SIZE - 1;
+        }
+        // Fixed size queue
+        private final Runnable[] queue = new Runnable[MAX_SIZE];
 
         private int size = 0;
         private int head = 0;
@@ -1099,11 +1113,11 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
         }
 
         void add(Runnable op) {
-            if (size == 16) {
+            if (size == 32) {
                 throw new IllegalStateException("queue size exceeded");
             }
             queue[tail] = op;
-            tail = (tail + 1) & 0xF;
+            tail = (tail + 1) & MASK;
             size++;
         }
 
@@ -1112,7 +1126,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
                 throw new IllegalStateException("queue is empty");
             }
             final Runnable ret = queue[head];
-            head = (head + 1) & 0xF;
+            head = (head + 1) & MASK;
             size--;
             return ret;
         }

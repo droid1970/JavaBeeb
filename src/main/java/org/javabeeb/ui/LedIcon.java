@@ -7,8 +7,8 @@ public final class LedIcon extends RoundIcon {
     private static final Color LED_ON_COLOUR = Color.RED;
     private static final Color LED_OFF_COLOUR = Color.GRAY;
 
-    public LedIcon(final int width, final int height, final int yoffset) {
-        super(width, height, yoffset);
+    public LedIcon(final int width, final int height) {
+        super(width, height);
     }
 
     public void setOn(final boolean on) {

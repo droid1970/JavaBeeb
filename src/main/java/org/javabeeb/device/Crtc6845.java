@@ -116,7 +116,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
         frameCount++;
         if (frameCount == 40) { // Update FPS status every couple of seconds
             final double secs = (System.nanoTime() - firstFrameTime) / 1_000_000_000.0;
-            getSystemStatus().putDouble(SystemStatus.FRAMES_PER_SECOND, frameCount / secs);
+            getSystemStatus().putDouble(SystemStatus.KEY_FPS, frameCount / secs);
             firstFrameTime = System.nanoTime();
             frameCount = 0;
         }

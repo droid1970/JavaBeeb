@@ -3,8 +3,6 @@ package org.javabeeb.clock;
 import org.javabeeb.util.SystemStatus;
 import org.javabeeb.util.Util;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
@@ -100,13 +98,10 @@ public final class Clock {
         }
     }
 
-    private static final NumberFormat FMT = new DecimalFormat("0.00");
     private void updateSystemStatus(final long duration) {
         final double seconds = (double) duration / 1_000_000_000L;
         final double cyclesPerSecond = cycleCountSinceReset / seconds / 1000000.0;
-        systemStatus.putString(SystemStatus.KEY_MILLION_CYCLES_PER_SECOND, FMT.format(cyclesPerSecond));
-        systemStatus.putLong(SystemStatus.KEY_TOTAL_CYCLES, cycleCount);
-        systemStatus.putString(SystemStatus.KEY_UP_TIME, FMT.format(seconds));
+        systemStatus.putDouble(SystemStatus.KEY_MHZ, cyclesPerSecond);
     }
 
     private void adjustDelay(final long durationNanos) {

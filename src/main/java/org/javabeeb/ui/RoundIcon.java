@@ -5,16 +5,17 @@ import java.awt.*;
 
 public class RoundIcon implements Icon {
 
+    private static final int OVAL_WIDTH = 8;
+    private static final int OVAL_HEIGHT = 8;
+
     private final int width;
     private final int height;
-    private final int yoffset;
 
     private Color colour;
 
-    public RoundIcon(final int width, final int height, final int yoffset) {
+    public RoundIcon(final int width, final int height) {
         this.width = width;
         this.height = height;
-        this.yoffset = yoffset;
     }
 
     public void setColour(final Color colour) {
@@ -26,7 +27,7 @@ public class RoundIcon implements Icon {
         final Graphics2D g = (Graphics2D) g1;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(colour);
-        g.fillOval((getIconWidth() - 8) / 2, (getIconHeight() - 8) / 2 + yoffset, 8, 8);
+        g.fillOval(x + (getIconWidth() - OVAL_WIDTH) / 2, y + (c.getHeight() - OVAL_HEIGHT) / 2, OVAL_WIDTH, OVAL_HEIGHT);
     }
 
     @Override

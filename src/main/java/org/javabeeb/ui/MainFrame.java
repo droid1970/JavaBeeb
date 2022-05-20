@@ -52,10 +52,11 @@ public class MainFrame extends JFrame {
 
     private final class StatusBar extends JComponent {
 
-        final ClockIcon clockIcon;
+        final RateIcon clockIcon;
+        final RateIcon fpsIcon;
         final JLabel clockLabel;
 
-        final JLabel screenLabel;
+        final JLabel fpsLabel;
         final JLabel capsLockLabel;
         final LedIcon capsLockIcon;
         boolean verbose = false;
@@ -89,20 +90,6 @@ public class MainFrame extends JFrame {
             add(Box.createRigidArea(new Dimension(4,0)));
             add(verboseCheckbox);
 
-            //
-            // Clock speed
-            //
-//            final JComboBox<ClockSpeed> speedCombo = new JComboBox<>(ClockSpeed.getStandardValues());
-//            speedCombo.setPreferredSize(new Dimension(128, 18));
-//            speedCombo.setMinimumSize(new Dimension(128, 18));
-//            speedCombo.setMaximumSize(new Dimension(128, 18));
-//            speedCombo.setSelectedItem(bbc.getClock().getClockSpeed());
-//            speedCombo.addActionListener(e -> {
-//                bbc.getClock().setClockSpeed(speedCombo.getItemAt(speedCombo.getSelectedIndex()));
-//            });
-//            add(Box.createRigidArea(new Dimension(4,0)));
-//            add(speedCombo);
-
             final JCheckBox keyMapCheckbox = createCheckbox("logical map");
             keyMapCheckbox.setSelected(false);
             keyMapCheckbox.addActionListener(e -> {
@@ -115,20 +102,29 @@ public class MainFrame extends JFrame {
             // Labels
             //
             add(Box.createRigidArea(new Dimension(8,0)));
-            clockIcon = new ClockIcon(12, 16, 1);
+            clockIcon = new RateIcon(12, 16, 2.0);
             clockIcon.setColour(Color.BLACK);
             clockLabel = createLabel();
             clockLabel.setHorizontalAlignment(JLabel.RIGHT);
             clockLabel.setIcon(clockIcon);
-            clockLabel.setText("00.00 Mhz");
+            clockLabel.setText("00.00 mhz");
             clockLabel.setPreferredSize(clockLabel.getPreferredSize());
             clockLabel.setText("");
-
             add(clockLabel);
+
+            fpsIcon = new RateIcon(12, 16, 50.0);
+            fpsIcon.setColour(Color.BLACK);
+            fpsLabel = createLabel();
+            fpsLabel.setHorizontalAlignment(JLabel.RIGHT);
+            fpsLabel.setIcon(fpsIcon);
+            fpsLabel.setText("99.99 fps");
+            fpsLabel.setPreferredSize(fpsLabel.getPreferredSize());
+            add(Box.createRigidArea(new Dimension(8,0)));
+            add(fpsLabel);
 
             capsLockLabel = createLabel();
             capsLockLabel.setText("caps");
-            capsLockIcon = new LedIcon(12, 16, 1);
+            capsLockIcon = new LedIcon(12, 16);
             capsLockIcon.setOn(bbc.getSystemVIA().isCapslockLightOn());
             capsLockLabel.setIcon(capsLockIcon);
             bbc.getSystemVIA().setCapsLockChangedCallback(() -> {
@@ -137,10 +133,6 @@ public class MainFrame extends JFrame {
             });
             add(Box.createRigidArea(new Dimension(8,0)));
             add(capsLockLabel);
-
-            screenLabel = createLabel();
-            add(Box.createRigidArea(new Dimension(8,0)));
-            add(screenLabel);
 
             final Dimension currentPreferredSize = getPreferredSize();
             setPreferredSize(new Dimension(currentPreferredSize.width, currentPreferredSize.height - 6));
@@ -170,14 +162,12 @@ public class MainFrame extends JFrame {
         }
 
         void refresh() {
-            final String mhzString = systemStatus.getString(SystemStatus.KEY_MILLION_CYCLES_PER_SECOND, "?");
-            try {
-                clockIcon.setRate(Double.parseDouble(mhzString));
-            } catch (Exception ex) {
-                // Ignored
-            }
-            clockLabel.setText(mhzString + " Mhz");
-            screenLabel.setText("fps = " + Util.formatDouble(systemStatus.getDouble(SystemStatus.FRAMES_PER_SECOND, 0.0)));
+            final double mhz = systemStatus.getDouble(SystemStatus.KEY_MHZ, 0.0);
+            final double fps = systemStatus.getDouble(SystemStatus.KEY_FPS, 0.0);
+            clockIcon.setRate(mhz);
+            clockLabel.setText(Util.formatDouble(mhz) + " mhz");
+            fpsIcon.setRate(fps);
+            fpsLabel.setText(Util.formatDouble(fps) + " fps");
         }
 
         @Override

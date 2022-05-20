@@ -14,10 +14,10 @@ import java.util.Objects;
 public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSource, ClockListener {
 
     // The clock rate that this is assumed to run at
-    private static final int CLOCK_DEFINITION = ClockDefinition.TWO_MHZ;
+    private static final int CLOCK_SPEED = ClockDefinition.TWO_MHZ;
 
     private static final int VERTICAL_SYNC_FREQUENCY_HZ = ClockDefinition.FIFTY_HZ;
-    private static final int VERTICAL_SYNC_2MHZ_CYCLES = CLOCK_DEFINITION / VERTICAL_SYNC_FREQUENCY_HZ;
+    private static final int VERTICAL_SYNC_2MHZ_CYCLES = CLOCK_SPEED / VERTICAL_SYNC_FREQUENCY_HZ;
 
     private static final int FAST_CURSOR_VSYNCS = 8;
     private static final int SLOW_CURSOR_VSYNCS = 16;
@@ -101,7 +101,7 @@ public class Crtc6845 extends AbstractMemoryMappedDevice implements InterruptSou
             firedSyncOff = false;
         }
 
-        tickCount += clockDefinition.computeElapsedCycles(CLOCK_DEFINITION, inputCycleCount, tickCount, elapsedNanos);
+        tickCount += clockDefinition.computeElapsedCycles(CLOCK_SPEED, inputCycleCount, tickCount, elapsedNanos);
         inputCycleCount++;
     }
 

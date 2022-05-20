@@ -27,9 +27,9 @@ public final class ScreenComponent extends JComponent implements ScreenImageCons
     private static final Color PAUSED_OVERLAY = new Color(255, 255, 255, 92);
     private static final int IMAGE_BORDER_SIZE = 32;
 
-    private final SystemPalette systemPalette = SystemPalette.DEFAULT;
     private final BBCMicro bbc;
     private final SystemVIA systemVIA;
+    private final SystemPalette palette;
 
     private final JLabel pausedLabel;
     private final List<IntConsumer> keyUpListeners = new ArrayList<>();
@@ -44,8 +44,9 @@ public final class ScreenComponent extends JComponent implements ScreenImageCons
     public ScreenComponent(final BBCMicro bbc, final int imageWidth, final int imageHeight) {
         this.bbc = bbc;
         this.systemVIA = bbc.getSystemVIA();
+        this.palette = Objects.requireNonNull(bbc.getPalette());
         setOpaque(false);
-        setBackground(systemPalette.getColour(0));
+        setBackground(bbc.getPalette().getColour(0));
         setPreferredSize(new Dimension(imageWidth + IMAGE_BORDER_SIZE * 2, imageHeight + IMAGE_BORDER_SIZE * 2));
         this.pausedLabel = new JLabel(PAUSED_TEXT);
         this.pausedLabel.setOpaque(false);
@@ -142,7 +143,7 @@ public final class ScreenComponent extends JComponent implements ScreenImageCons
             }
             ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             final Rectangle imageRect = new Rectangle(px + IMAGE_BORDER_SIZE, py + IMAGE_BORDER_SIZE, pw - IMAGE_BORDER_SIZE * 2, ph - IMAGE_BORDER_SIZE * 2);
-            g.setColor(systemPalette.getColour(0));
+            g.setColor(palette.getColour(0));
             g.fillRect(imageRect.x - IMAGE_BORDER_SIZE / 2, imageRect.y - IMAGE_BORDER_SIZE / 2, imageRect.width + IMAGE_BORDER_SIZE, imageRect.height + IMAGE_BORDER_SIZE);
             final int offsetX = (imageOrigin == null) ? 0 : imageOrigin.x;
             final int offsetY = (imageOrigin == null) ? 0 : imageOrigin.y;

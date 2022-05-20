@@ -29,8 +29,6 @@ final class TeletextRenderer {
     private boolean textShowing = true;
     private boolean bottom = true;
 
-    private SystemPalette systemPalette = SystemPalette.DEFAULT;
-
     public TeletextRenderer() {
         resetToDefaults();
     }

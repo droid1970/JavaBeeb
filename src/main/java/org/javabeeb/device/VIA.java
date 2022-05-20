@@ -12,7 +12,7 @@ import org.javabeeb.util.SystemStatus;
 public class VIA extends AbstractMemoryMappedDevice implements ClockListener, InterruptSource {
 
     // The clock rate that this is assumed to run at
-    private static final int CLOCK_RATE = ClockDefinition.TWO_MHZ;
+    private static final int CLOCK_SPEED = ClockDefinition.TWO_MHZ;
 
     private static final int ORB = 0x0;
     private static final int ORA = 0x1;
@@ -106,9 +106,6 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
     @StateKey(key = "cb2")
     protected boolean cb2;
 
-    protected Runnable ca2callback = null;
-    protected Runnable cb2callback = null;
-
     @StateKey(key = "justhit")
     protected int justhit;
 
@@ -116,7 +113,7 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
     protected int t1_pb7;
 
     private long inputCycleCount;
-    private long myCycleCount;
+    private long tickCount;
 
     public VIA(
             final SystemStatus systemStatus,
@@ -149,9 +146,9 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
 
     @Override
     public void tick(final ClockDefinition clockDefinition, final long elapsedNanos) {
-        final int cycles = clockDefinition.computeElapsedCycles(CLOCK_RATE, inputCycleCount, myCycleCount, elapsedNanos);
+        final int cycles = clockDefinition.computeElapsedCycles(CLOCK_SPEED, inputCycleCount, tickCount, elapsedNanos);
         inputCycleCount++;
-        myCycleCount += cycles;
+        tickCount += cycles;
         if (cycles <= 0) {
             return;
         }
@@ -492,9 +489,6 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
         }
         ca2 = level;
         boolean output = (pcr & 0x08) != 0;
-        if (ca2callback != null) {
-            // TODO
-        }
         if (output) {
             return;
         }
@@ -530,10 +524,8 @@ public class VIA extends AbstractMemoryMappedDevice implements ClockListener, In
         }
 
         cb2 = level;
-        boolean output = (pcr & 0x80) != 0;
-        if (cb2callback != null) {
-            // TODO
-        }
+        final boolean output = (pcr & 0x80) != 0;
+
         if (output) {
             return;
         }

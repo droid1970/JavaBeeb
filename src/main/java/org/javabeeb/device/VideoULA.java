@@ -6,6 +6,7 @@ import org.javabeeb.util.StateKey;
 import org.javabeeb.util.SystemStatus;
 
 import java.awt.*;
+import java.util.Objects;
 
 @StateKey(key = "videoULA")
 public class VideoULA extends AbstractMemoryMappedDevice implements InterruptSource {
@@ -52,7 +53,7 @@ public class VideoULA extends AbstractMemoryMappedDevice implements InterruptSou
             0b01010101
     };
 
-    private final SystemPalette systemPalette = SystemPalette.DEFAULT;
+    private final SystemPalette systemPalette;
 
     @StateKey(key = "videoControlRegister")
     private int videoControlRegister;
@@ -62,8 +63,9 @@ public class VideoULA extends AbstractMemoryMappedDevice implements InterruptSou
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
     };
 
-    public VideoULA(final SystemStatus systemStatus, final String name, final int startAddress) {
+    public VideoULA(final SystemStatus systemStatus, final SystemPalette palette, final String name, final int startAddress) {
         super(systemStatus, name, startAddress, 8);
+        this.systemPalette = Objects.requireNonNull(palette);
     }
 
     public boolean isCursorEnabled() {

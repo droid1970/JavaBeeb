@@ -1,6 +1,5 @@
 package org.javabeeb;
 
-import org.javabeeb.screen.SystemPalette;
 import org.javabeeb.ui.MainFrame;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ public final class JavaBeebMain {
     }
 
     private static void createAndShowUI(final BBCMicro bbc) {
-        new MainFrame(bbc, SystemPalette.DEFAULT);
+        new MainFrame(bbc);
     }
 
     private static final NumberFormat FMT = new DecimalFormat("0.00");

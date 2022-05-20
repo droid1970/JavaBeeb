@@ -9,6 +9,7 @@ import org.javabeeb.localfs.FilingSystem;
 import org.javabeeb.localfs.LocalFilingSystem;
 import org.javabeeb.memory.*;
 import org.javabeeb.screen.Screen;
+import org.javabeeb.screen.SystemPalette;
 import org.javabeeb.sound.SoundChip;
 import org.javabeeb.util.*;
 
@@ -53,6 +54,7 @@ public final class BBCMicro implements InterruptSource {
     private final PagedRomSelect pagedRomSelect;
     private final RandomAccessMemory ram;
     private final Memory memory;
+    private final SystemPalette palette = SystemPalette.DEFAULT;
 
     private final Cpu cpu;
 
@@ -64,6 +66,7 @@ public final class BBCMicro implements InterruptSource {
 
         this.videoULA = new VideoULA(
                 systemStatus,
+                palette,
                 "Video ULA",
                 SHEILA + 0x20
         );
@@ -199,6 +202,10 @@ public final class BBCMicro implements InterruptSource {
 
     public Screen getScreen() {
         return screen;
+    }
+
+    public SystemPalette getPalette() {
+        return palette;
     }
 
     private State savedState;

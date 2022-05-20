@@ -18,15 +18,15 @@ public class MainFrame extends JFrame {
     private final BBCMicro bbc;
     private final SystemVIA systemVIA;
 
-    public MainFrame(final BBCMicro bbc, final SystemPalette systemPalette) {
+    public MainFrame(final BBCMicro bbc) {
         super("JavaBeeb");
         this.systemStatus = bbc.getSystemStatus();
         this.bbc = Objects.requireNonNull(bbc);
         this.systemVIA = bbc.getSystemVIA();
-        createAndShowUI(bbc, systemPalette);
+        createAndShowUI(bbc);
     }
 
-    private void createAndShowUI(final BBCMicro bbc, final SystemPalette systemPalette) {
+    private void createAndShowUI(final BBCMicro bbc) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
         final Screen screen = bbc.getScreen();
         final ScreenComponent screenComponent = new ScreenComponent(bbc, screen.getImageWidth(), screen.getImageHeight());
         screen.setScreenImageConsumer(screenComponent);
-        getContentPane().setBackground(systemPalette.getColour(0));
+        getContentPane().setBackground(bbc.getPalette().getColour(0));
         getContentPane().add(BorderLayout.CENTER, screenComponent);
 
         final StatusBar statusBar = new StatusBar();

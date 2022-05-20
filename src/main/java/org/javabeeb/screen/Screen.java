@@ -29,6 +29,7 @@ public final class Screen implements ClockListener {
     private final BBCMicro bbc;
     private final VideoULA videoULA;
     private final SystemVIA systemVIA;
+    private final SystemPalette palette;
     private final List<IntConsumer> keyUpListeners = new ArrayList<>();
     private final List<BiConsumer<Integer, Boolean>> keyDownListeners = new ArrayList<>();
 
@@ -56,6 +57,7 @@ public final class Screen implements ClockListener {
     ) {
         this.systemStatus = Objects.requireNonNull(systemStatus);
         this.bbc = Objects.requireNonNull(bbc);
+        this.palette = Objects.requireNonNull(bbc.getPalette());
         this.videoULA = Objects.requireNonNull(videoULA);
         this.systemVIA = Objects.requireNonNull(systemVIA);
         this.graphicsRenderer = new GraphicsModeScreenRenderer(this, memory, systemVIA, crtc6845, videoULA);
@@ -63,7 +65,6 @@ public final class Screen implements ClockListener {
     }
 
     private int imageIndex;
-    private SystemPalette systemPalette = SystemPalette.DEFAULT;
     private Point imageOrigin;
 
     private BufferedImage getImageToPaint() {
@@ -120,7 +121,7 @@ public final class Screen implements ClockListener {
         if (renderer != null) {
             if (renderer.isClockBased()) {
                 final BufferedImage image = getImageToPaint();
-                Util.fillRect(image.getWritableTile(0, 0).getDataBuffer(), systemPalette.getColour(0).getRGB(), 0, 0, image.getWidth(), image.getHeight(), image.getWidth());
+                Util.fillRect(image.getWritableTile(0, 0).getDataBuffer(), palette.getColour(0).getRGB(), 0, 0, image.getWidth(), image.getHeight(), image.getWidth());
                 renderer.newFrame();
             } else {
                 renderer.refreshWholeImage(getImageToPaint());

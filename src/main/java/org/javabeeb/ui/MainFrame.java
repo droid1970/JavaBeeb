@@ -105,7 +105,6 @@ public class MainFrame extends JFrame {
             clockIcon = new RateIcon(12, 16, 2.0);
             clockIcon.setColour(Color.BLACK);
             clockLabel = createLabel();
-            clockLabel.setHorizontalAlignment(JLabel.RIGHT);
             clockLabel.setIcon(clockIcon);
             clockLabel.setText("00.00 mhz");
             clockLabel.setPreferredSize(clockLabel.getPreferredSize());
@@ -115,9 +114,8 @@ public class MainFrame extends JFrame {
             fpsIcon = new RateIcon(12, 16, 50.0);
             fpsIcon.setColour(Color.BLACK);
             fpsLabel = createLabel();
-            fpsLabel.setHorizontalAlignment(JLabel.RIGHT);
             fpsLabel.setIcon(fpsIcon);
-            fpsLabel.setText("99.99 fps");
+            fpsLabel.setText("999 fps");
             fpsLabel.setPreferredSize(fpsLabel.getPreferredSize());
             add(Box.createRigidArea(new Dimension(8,0)));
             add(fpsLabel);
@@ -167,7 +165,7 @@ public class MainFrame extends JFrame {
             clockIcon.setRate(mhz);
             clockLabel.setText(Util.formatDouble(mhz) + " mhz");
             fpsIcon.setRate(fps);
-            fpsLabel.setText(Util.formatDouble(fps) + " fps");
+            fpsLabel.setText(Math.round(fps) + " fps");
         }
 
         @Override

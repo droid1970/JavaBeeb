@@ -17,8 +17,6 @@ import java.util.function.Predicate;
 @StateKey(key = "cpu6502")
 public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
 
-    private static final boolean USE_QUEUE = true;
-
     public static final int NMI_JUMP_VECTOR = 0xFFFA;
     public static final int CODE_START_VECTOR = 0xFFFC;
     public static final int IRQ_JUMP_VECTOR = 0xFFFE;
@@ -31,7 +29,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     private final Scheduler scheduler;
     private final InstructionSet instructionSet = new InstructionSet();
     private final AtomicLong cycleCount = new AtomicLong();
-    private final OpQueue queue = new OpQueue();
+    private final CpuQueue queue = new CpuQueue();
     private final Disassembler disassembler;
 
     private InterruptSource interruptSource;
@@ -517,12 +515,7 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     }
 
     private void queue(final Runnable runnable) {
-        if (USE_QUEUE) {
-            queue.add(runnable);
-        } else {
-            runnable.run();
-            cycleCount.incrementAndGet();
-        }
+        queue.add(runnable);
     }
 
     private void nop() {
@@ -671,14 +664,14 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
     }
 
     private void accumulator() {
-        queue.add(() -> {
+        queue(() -> {
             readFromPC();
             setA(instruction.transformValue(this, getA()), true);
         });
     }
 
     private void implied() {
-        queue.add(() -> {
+        queue(() -> {
             readFromPC();
             instruction.performImpliedAction(this);
         });
@@ -1084,51 +1077,5 @@ public final class Cpu implements Device, ClockListener, Runnable, Scheduler {
         s.append("  irq = " + isIRQ());
         s.append("  nmi = " + isNMI());
         return s.toString();
-    }
-
-    private static final class OpQueue {
-
-        private static final int MAX_SIZE = 64;
-        private static final int MASK;
-        static {
-            if (MAX_SIZE < 16) {
-                throw new IllegalStateException(MAX_SIZE + ": MAX_SIZE must be >= 16");
-            }
-            // Enforce that size is a power of 2
-            final int shift = 32 - Integer.numberOfLeadingZeros(MAX_SIZE) - 1;
-            if (((MAX_SIZE >>> shift) << shift) != MAX_SIZE) {
-                throw new IllegalStateException(MAX_SIZE + ": MAX_SIZE must be power of 2");
-            }
-            MASK = MAX_SIZE - 1;
-        }
-        // Fixed size queue
-        private final Runnable[] queue = new Runnable[MAX_SIZE];
-
-        private int size = 0;
-        private int head = 0;
-        private int tail = 0;
-
-        boolean isEmpty() {
-            return size == 0;
-        }
-
-        void add(Runnable op) {
-            if (size == 32) {
-                throw new IllegalStateException("queue size exceeded");
-            }
-            queue[tail] = op;
-            tail = (tail + 1) & MASK;
-            size++;
-        }
-
-        Runnable remove() {
-            if (size == 0) {
-                throw new IllegalStateException("queue is empty");
-            }
-            final Runnable ret = queue[head];
-            head = (head + 1) & MASK;
-            size--;
-            return ret;
-        }
     }
 }

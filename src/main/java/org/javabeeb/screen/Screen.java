@@ -40,9 +40,6 @@ public final class Screen implements ClockListener {
     private final BufferedImage image0 = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
     private final BufferedImage image1 = DOUBLE_BUFFERED ? new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB) : null;
 
-    private long cycleCount = 0L;
-    private long totalRefreshTimeNanos = 0L;
-
     private ScreenImageConsumer imageConsumer;
 
     private volatile boolean paused;
@@ -98,11 +95,8 @@ public final class Screen implements ClockListener {
         return IMAGE_HEIGHT;
     }
 
-
-
     public void imageReady(final Point origin, final long timeNanos) {
         swapImages();
-        totalRefreshTimeNanos += timeNanos;
         this.imageOrigin = origin;
         imageConsumer.setImage(getImageToShow(), imageOrigin);
     }

@@ -40,18 +40,10 @@ public final class Clock {
         }
     }
 
-    public ClockDefinition getDefinition() {
-        return definition;
-    }
-
     public void setDefinition(final ClockDefinition definition) {
         this.definition = Objects.requireNonNull(definition);
         this.delayNanos = 1_000_000_000L / definition.getClockRate();
         this.initialDelayNanos = this.delayNanos;
-    }
-
-    public long getCycleCount() {
-        return cycleCount;
     }
 
     public void setPaused(final boolean paused) {

@@ -48,10 +48,9 @@ public enum Instruction {
     BIT(InstructionType.READ) {
         @Override
         public void acceptValue(final Cpu cpu, final int value) {
-            final int a = cpu.getA();
             cpu.setFlag(Flag.NEGATIVE, (value & 0x80) != 0);
             cpu.setFlag(Flag.OVERFLOW, (value & 0x40) != 0);
-            cpu.setFlag(Flag.ZERO, (value & a) == 0);
+            cpu.setFlag(Flag.ZERO, (value & cpu.getA()) == 0);
         }
     },
     BMI(InstructionType.BRANCH) {
@@ -365,8 +364,6 @@ public enum Instruction {
         }
     }
     ;
-
-
 
     private final InstructionType type;
 

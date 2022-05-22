@@ -3,16 +3,16 @@ package org.javabeeb.ui;
 import org.javabeeb.BBCMicro;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.screen.Screen;
-import org.javabeeb.screen.SystemPalette;
 import org.javabeeb.util.SystemStatus;
 import org.javabeeb.util.Util;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.Objects;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends BFrame {
 
     private final SystemStatus systemStatus;
     private final BBCMicro bbc;
@@ -37,6 +37,8 @@ public class MainFrame extends JFrame {
         screen.setScreenImageConsumer(screenComponent);
         getContentPane().setBackground(bbc.getPalette().getColour(0));
         getContentPane().add(BorderLayout.CENTER, screenComponent);
+
+        final JRootPane rp = getRootPane();
 
         final StatusBar statusBar = new StatusBar();
         getContentPane().add(BorderLayout.SOUTH, statusBar);
@@ -66,6 +68,11 @@ public class MainFrame extends JFrame {
             setBackground(Color.DARK_GRAY);
             setBorder(new EmptyBorder(4, 8, 8, 4));
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
+            final var testButton = new IconButton(new RoundButtonIcon(), 16);
+            add(testButton);
+            add(Box.createRigidArea(new Dimension(4,0)));
+            testButton.addActionListener(e -> System.err.println("test button pressed"));
 
             final var saveStateButton = createButton("SAVE");
             saveStateButton.addActionListener(e -> {

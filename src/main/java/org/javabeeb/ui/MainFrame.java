@@ -3,12 +3,12 @@ package org.javabeeb.ui;
 import org.javabeeb.BBCMicro;
 import org.javabeeb.device.SystemVIA;
 import org.javabeeb.screen.Screen;
+import org.javabeeb.ui.icon.RoundButtonIcon;
 import org.javabeeb.util.SystemStatus;
 import org.javabeeb.util.Util;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.Objects;
 
@@ -65,14 +65,9 @@ public class MainFrame extends BFrame {
 
         StatusBar() {
             setOpaque(true);
-            setBackground(Color.DARK_GRAY);
-            setBorder(new EmptyBorder(4, 8, 8, 4));
+            setBackground(BFrame.DECORATION_BACKGROUND);
+            setBorder(new EmptyBorder(4, 4, 0, 4));
             setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-
-            final var testButton = new IconButton(new RoundButtonIcon(), 16);
-            add(testButton);
-            add(Box.createRigidArea(new Dimension(4,0)));
-            testButton.addActionListener(e -> System.err.println("test button pressed"));
 
             final var saveStateButton = createButton("SAVE");
             saveStateButton.addActionListener(e -> {

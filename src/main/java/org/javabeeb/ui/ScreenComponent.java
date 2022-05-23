@@ -111,12 +111,16 @@ public final class ScreenComponent extends JComponent implements ScreenImageCons
 
     @Override
     public void paintComponent(Graphics g) {
-        final long startTime = System.nanoTime();
         final Rectangle r = SwingUtilities.calculateInnerArea(this, null);
         if (isOpaque()) {
             g.setColor(getBackground());
             g.fillRect(0, 0, getWidth(), getHeight());
         }
+
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(getBackground());
+        g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
 
         if (image != null) {
             final int iw = image.getWidth() + IMAGE_BORDER_SIZE * 2;

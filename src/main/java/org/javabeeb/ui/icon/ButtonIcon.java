@@ -1,4 +1,4 @@
-package org.javabeeb.ui;
+package org.javabeeb.ui.icon;
 
 import java.awt.*;
 

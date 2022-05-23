@@ -3,6 +3,7 @@ package org.javabeeb.ui;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import org.javabeeb.ui.icon.ButtonIcon;
 
 // A simple icon-only, square button
 public class IconButton extends JButton {

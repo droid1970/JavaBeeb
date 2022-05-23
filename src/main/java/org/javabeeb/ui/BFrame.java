@@ -10,10 +10,17 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import org.javabeeb.ui.icon.BlankButtonIcon;
+import org.javabeeb.ui.icon.ButtonIcon;
+import org.javabeeb.ui.icon.CloseWindowIcon;
+import org.javabeeb.ui.icon.MaximiseWindowIcon;
+import org.javabeeb.ui.icon.MinimiseWindowIcon;
+import org.javabeeb.ui.icon.SettingsIcon;
 
 public class BFrame extends JFrame {
 
-    private static final Color DECORATION_BACKGROUND = new Color(64, 72, 92);
+    public static final Color DECORATION_BACKGROUND = new Color(80, 90, 116);
+    public static final Color OUTLINE_COLOR = Color.GRAY;
 
     private static final Border BUTTON_BORDER = new EmptyBorder(0, 4, 0, 4);
     private static final Color BUTTON_ROLLOVER_BACKGROUND = new Color(255, 255, 255, 32);
@@ -23,7 +30,7 @@ public class BFrame extends JFrame {
     private static final int EDGE_SIZE = 6;
     private static final int CORNER_SIZE = 12;
     private static final int TITLE_HEIGHT = 18;
-    private static final Color OUTLINE_COLOR = Color.GRAY;//new Color(255, 255, 255, 64);
+
 
     public BFrame(String title) throws HeadlessException {
         super(title);
@@ -110,44 +117,39 @@ public class BFrame extends JFrame {
                         int dy = e.getLocationOnScreen().y - pressPoint.y;
                         switch (pressArea) {
                             case TITLE:
-                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y + dy);
+                                BFrame.this.setBounds(pressLocation.x + dx, pressLocation.y + dy, pressSize.width, pressSize.height);
                                 break;
 
                             case TOP:
-                                BFrame.this.setSize(new Dimension(pressSize.width, pressSize.height - dy));
-                                BFrame.this.setLocation(pressLocation.x, pressLocation.y + dy);
+                                BFrame.this.setBounds(pressLocation.x, pressLocation.y + dy, pressSize.width, pressSize.height - dy);
                                 break;
 
                             case LEFT:
-                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height));
-                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y);
+                                BFrame.this.setBounds(pressLocation.x + dx, pressLocation.y, pressSize.width - dx, pressSize.height);
                                 break;
 
                             case BOTTOM:
-                                BFrame.this.setSize(new Dimension(pressSize.width, pressSize.height + dy));
+                                BFrame.this.setBounds(pressLocation.x, pressLocation.y, pressSize.width, pressSize.height + dy);
                                 break;
 
                             case RIGHT:
-                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height));
+                                BFrame.this.setBounds(pressLocation.x, pressLocation.y, pressSize.width + dx, pressSize.height);
                                 break;
 
                             case TOP_LEFT:
-                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height - dy));
-                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y + dy);
+                                BFrame.this.setBounds(pressLocation.x + dx, pressLocation.y + dy, pressSize.width - dx, pressSize.height - dy);
                                 break;
 
                             case TOP_RIGHT:
-                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height - dy));
-                                BFrame.this.setLocation(pressLocation.x, pressLocation.y + dy);
+                                BFrame.this.setBounds(pressLocation.x, pressLocation.y + dy, pressSize.width + dx, pressSize.height - dy);
                                 break;
 
                             case BOTTOM_LEFT:
-                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height + dy));
-                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y);
+                                BFrame.this.setBounds(pressLocation.x + dx, pressLocation.y, pressSize.width - dx, pressSize.height + dy);
                                 break;
 
                             case BOTTOM_RIGHT:
-                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height + dy));
+                                BFrame.this.setBounds(pressLocation.x, pressLocation.y, pressSize.width + dx, pressSize.height + dy);
                                 break;
                         }
                     }
@@ -206,16 +208,15 @@ public class BFrame extends JFrame {
                     setCursor(Cursor.getDefaultCursor());
             }
         }
+
         @Override
         public void paintComponent(final Graphics g1) {
             super.paintComponent(g1);
             final Graphics2D g = (Graphics2D) g1;
             g.setColor(OUTLINE_COLOR);
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-            g.drawLine(0, 0, getWidth() - 1, 0);
-            g.drawLine(0, 0, 0, getHeight() - 1);
-            g.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight() - 1);
-            g.drawLine(getWidth() - 1, getHeight() - 1, 0, getHeight() - 1);
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(getBackground());
+            g.fillRect(1, 1, getWidth() - 2, getHeight() - 2);
         }
 
         private FrameArea computeFrameArea(final Point p) {
@@ -281,7 +282,7 @@ public class BFrame extends JFrame {
             add(titleLabel, BorderLayout.CENTER);
             add(rightButtonComponent, BorderLayout.EAST);
 
-            final IconButton menuButton = createButton(new MenuWindowIcon(), MENU_BUTTON_ROLLOVER_BACKGROUND);
+            final IconButton settingsButton = createButton(new SettingsIcon(), MENU_BUTTON_ROLLOVER_BACKGROUND);
 
             final IconButton minimiseButton = createButton(new MinimiseWindowIcon(), BUTTON_ROLLOVER_BACKGROUND);
             minimiseButton.addActionListener(e -> setExtendedState(JFrame.ICONIFIED));
@@ -292,7 +293,7 @@ public class BFrame extends JFrame {
             final IconButton closeButton = createButton(new CloseWindowIcon(), CLOSE_BUTTON_ROLLOVER_BACKGROUND);
             closeButton.addActionListener(e -> close());
 
-            leftButtonComponent.addComponent(menuButton);
+            leftButtonComponent.addComponent(settingsButton);
             leftButtonComponent.add(createBlankButton());
             leftButtonComponent.add(createBlankButton());
 

@@ -1,5 +1,7 @@
 package org.javabeeb.ui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
@@ -19,6 +21,7 @@ public class BFrame extends JFrame {
     private static final Color MENU_BUTTON_ROLLOVER_BACKGROUND = new Color(0, 128, 255, 192);
 
     private static final int EDGE_SIZE = 6;
+    private static final int CORNER_SIZE = 12;
     private static final int TITLE_HEIGHT = 18;
     private static final Color OUTLINE_COLOR = new Color(255, 255, 255, 64);
 
@@ -43,6 +46,207 @@ public class BFrame extends JFrame {
         }
     }
 
+    private enum FrameArea {
+        TITLE,
+        TOP,
+        LEFT,
+        BOTTOM,
+        RIGHT,
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT
+    }
+
+    private final class BRootFrame extends JRootPane {
+
+        boolean dragging;
+        FrameArea pressArea;
+        Point pressPoint;
+        Dimension pressSize;
+        Point pressLocation;
+
+        BRootFrame() {
+            setBorder(new EmptyBorder(EDGE_SIZE, EDGE_SIZE, EDGE_SIZE, EDGE_SIZE));
+            setOpaque(true);
+            setBackground(DECORATION_BACKGROUND);
+
+            final MouseAdapter mouseHandler = new MouseAdapter() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+                        swapMaximised();
+                    }
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        dragging = true;
+                        pressPoint = e.getLocationOnScreen();
+                        pressArea = computeFrameArea(e.getPoint());
+                        pressSize = BFrame.this.getSize();
+                        pressLocation = BFrame.this.getLocationOnScreen();
+                    }
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON1) {
+                        dragging = false;
+                        pressPoint = null;
+                        pressArea = null;
+                        pressSize = null;
+                        pressLocation = null;
+                        setCursor(Cursor.getDefaultCursor());
+                    }
+                }
+
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    if (dragging) {
+                        int dx = e.getLocationOnScreen().x - pressPoint.x;
+                        int dy = e.getLocationOnScreen().y - pressPoint.y;
+                        switch (pressArea) {
+                            case TITLE:
+                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y + dy);
+                                break;
+
+                            case TOP:
+                                BFrame.this.setSize(new Dimension(pressSize.width, pressSize.height - dy));
+                                BFrame.this.setLocation(pressLocation.x, pressLocation.y + dy);
+                                break;
+
+                            case LEFT:
+                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height));
+                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y);
+                                break;
+
+                            case BOTTOM:
+                                BFrame.this.setSize(new Dimension(pressSize.width, pressSize.height + dy));
+                                break;
+
+                            case RIGHT:
+                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height));
+                                break;
+
+                            case TOP_LEFT:
+                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height - dy));
+                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y + dy);
+                                break;
+
+                            case TOP_RIGHT:
+                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height - dy));
+                                BFrame.this.setLocation(pressLocation.x, pressLocation.y + dy);
+                                break;
+
+                            case BOTTOM_LEFT:
+                                BFrame.this.setSize(new Dimension(pressSize.width - dx, pressSize.height + dy));
+                                BFrame.this.setLocation(pressLocation.x + dx, pressLocation.y);
+                                break;
+
+                            case BOTTOM_RIGHT:
+                                BFrame.this.setSize(new Dimension(pressSize.width + dx, pressSize.height + dy));
+                                break;
+                        }
+                    }
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    final FrameArea area = computeFrameArea(e.getPoint());
+                    setCursorForArea(area);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            };
+            addMouseListener(mouseHandler);
+            addMouseMotionListener(mouseHandler);
+        }
+
+        private void setCursorForArea(final FrameArea area) {
+            switch (area) {
+                case TOP:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
+                    break;
+                case LEFT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
+                    break;
+                case BOTTOM:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
+                    break;
+                case RIGHT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
+                    break;
+                case TOP_LEFT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
+                    break;
+                case TOP_RIGHT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
+                    break;
+                case BOTTOM_LEFT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
+                    break;
+                case BOTTOM_RIGHT:
+                    setCursor(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
+                    break;
+                default:
+                    setCursor(Cursor.getDefaultCursor());
+            }
+        }
+        @Override
+        public void paintComponent(final Graphics g1) {
+            super.paintComponent(g1);
+            final Graphics2D g = (Graphics2D) g1;
+            g.setColor(OUTLINE_COLOR);
+            g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        }
+
+        private FrameArea computeFrameArea(final Point p) {
+            if (p.x < EDGE_SIZE) {
+                if (p.y < CORNER_SIZE) {
+                    return FrameArea.TOP_LEFT;
+                }
+                if (p.y > getHeight() - CORNER_SIZE) {
+                    return FrameArea.BOTTOM_LEFT;
+                }
+                return FrameArea.LEFT;
+            }
+            if (p.x > getWidth() - EDGE_SIZE) {
+                if (p.y < CORNER_SIZE) {
+                    return FrameArea.TOP_RIGHT;
+                }
+                if (p.y > getHeight() - CORNER_SIZE) {
+                    return FrameArea.BOTTOM_RIGHT;
+                }
+                return FrameArea.RIGHT;
+            }
+            if (p.y < EDGE_SIZE) {
+                if (p.x < CORNER_SIZE) {
+                    return FrameArea.TOP_LEFT;
+                }
+                if (p.x > getWidth() - CORNER_SIZE) {
+                    return FrameArea.TOP_RIGHT;
+                }
+                return FrameArea.TOP;
+            }
+            if (p.y > getHeight() - EDGE_SIZE) {
+                if (p.x < CORNER_SIZE) {
+                    return FrameArea.BOTTOM_LEFT;
+                }
+                if (p.x > getWidth() - CORNER_SIZE) {
+                    return FrameArea.BOTTOM_RIGHT;
+                }
+                return FrameArea.BOTTOM;
+            }
+            return FrameArea.TITLE;
+        }
+    }
+
     private final class TitleComponent extends JComponent {
 
         final ButtonComponent leftButtonComponent;
@@ -57,7 +261,7 @@ public class BFrame extends JFrame {
             setBorder(new EmptyBorder(0, 0, EDGE_SIZE, 0));
             leftButtonComponent = new ButtonComponent();
             rightButtonComponent = new ButtonComponent();
-            titleLabel = new JLabel("Title");
+            titleLabel = new JLabel(getTitle());
             titleLabel.setForeground(Color.LIGHT_GRAY);
             titleLabel.setOpaque(false);
             titleLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -120,22 +324,6 @@ public class BFrame extends JFrame {
             buttonComponents.forEach(this::add);
             revalidate();
             repaint();
-        }
-    }
-
-    private final class BRootFrame extends JRootPane {
-        BRootFrame() {
-            setBorder(new EmptyBorder(EDGE_SIZE, EDGE_SIZE, EDGE_SIZE, EDGE_SIZE));
-            setOpaque(true);
-            setBackground(DECORATION_BACKGROUND);
-        }
-
-        @Override
-        public void paintComponent(final Graphics g1) {
-            super.paintComponent(g1);
-            final Graphics2D g = (Graphics2D) g1;
-            g.setColor(OUTLINE_COLOR);
-            g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
         }
     }
 }

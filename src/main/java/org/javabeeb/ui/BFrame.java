@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class BFrame extends JFrame {
 
-    private static final Color DECORATION_BACKGROUND = Color.DARK_GRAY;
+    private static final Color DECORATION_BACKGROUND = new Color(64, 72, 92);
 
     private static final Border BUTTON_BORDER = new EmptyBorder(0, 4, 0, 4);
     private static final Color BUTTON_ROLLOVER_BACKGROUND = new Color(255, 255, 255, 32);
@@ -23,7 +23,7 @@ public class BFrame extends JFrame {
     private static final int EDGE_SIZE = 6;
     private static final int CORNER_SIZE = 12;
     private static final int TITLE_HEIGHT = 18;
-    private static final Color OUTLINE_COLOR = new Color(255, 255, 255, 64);
+    private static final Color OUTLINE_COLOR = Color.GRAY;//new Color(255, 255, 255, 64);
 
     public BFrame(String title) throws HeadlessException {
         super(title);
@@ -173,27 +173,35 @@ public class BFrame extends JFrame {
                 case TOP:
                     setCursor(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR));
                     break;
+
                 case LEFT:
                     setCursor(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR));
                     break;
+
                 case BOTTOM:
                     setCursor(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR));
                     break;
+
                 case RIGHT:
                     setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
                     break;
+
                 case TOP_LEFT:
                     setCursor(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
                     break;
+
                 case TOP_RIGHT:
                     setCursor(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
                     break;
+
                 case BOTTOM_LEFT:
-                    setCursor(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR));
+                    setCursor(Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR));
                     break;
+
                 case BOTTOM_RIGHT:
-                    setCursor(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR));
+                    setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
                     break;
+
                 default:
                     setCursor(Cursor.getDefaultCursor());
             }
@@ -203,7 +211,11 @@ public class BFrame extends JFrame {
             super.paintComponent(g1);
             final Graphics2D g = (Graphics2D) g1;
             g.setColor(OUTLINE_COLOR);
-            g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            g.drawLine(0, 0, getWidth() - 1, 0);
+            g.drawLine(0, 0, 0, getHeight() - 1);
+            g.drawLine(getWidth() - 1, 0, getWidth() - 1, getHeight() - 1);
+            g.drawLine(getWidth() - 1, getHeight() - 1, 0, getHeight() - 1);
         }
 
         private FrameArea computeFrameArea(final Point p) {
